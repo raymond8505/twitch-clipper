@@ -18,5 +18,11 @@
   "bugs": {
     "url": "https://github.com/raymond8505/twitch-clipper/issues"
   },
-  "homepage": "https://github.com/raymond8505/twitch-clipper#readme"
+  "homepage": "https://github.com/raymond8505/twitch-clipper#readme",
+  "dependencies": {
+    "@twurple/api": "^5.0.8",
+    "@twurple/auth": "^5.0.8",
+    "dotenv": "^10.0.0",
+    "twitchdl": "0.0.2"
+  }
 }
