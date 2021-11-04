@@ -17,61 +17,38 @@ console.log(`
 
 //console.log(clientId, clientSecret);
 
-let tokenData;
+const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret);
 
-fs.readFile("./tokens.json", "UTF-8").then(async (data) => {
-  tokenData = JSON.parse(data);
+const client = new ApiClient({ authProvider });
 
-  //   const authProvider = new RefreshingAuthProvider(
-  //     {
-  //       clientId,
-  //       clientSecret,
-  //       onRefresh: async (newTokenData) =>
-  //         await fs.writeFile(
-  //           "./tokens.json",
-  //           JSON.stringify(newTokenData, null, 4),
-  //           "UTF-8"
-  //         ),
-  //     },
-  //     tokenData
-  //   );
+client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
+  const userID = me.id;
 
-  const authProvider = new ClientCredentialsAuthProvider(
-    clientId,
-    clientSecret
-  );
+  // const channel = await client.channels.getChannelInfo(userID);
 
-  const client = new ApiClient({ authProvider });
+  // console.log(channel.displayName);
 
-  client.users.getUserByName("raymond8505").then(async (me) => {
-    const userID = me.id;
+  const videos = await client.videos.getVideosByUser(me);
 
-    // const channel = await client.channels.getChannelInfo(userID);
+  videos.data.forEach(async (video) => {
+    console.log(`downloading ${video.url}`);
 
-    // console.log(channel.displayName);
+    const { stdout } = await exec(
+      `python twitch-dl download -q source ${video.url}`,
+      (err, stdout, stderr) => {
+        //console.log(err, stdout, stderr);
+      }
+    );
 
-    const videos = await client.videos.getVideosByUser(me);
+    stdout.on("data", (data) => {
+      data.split("\n").forEach((line) => {
+        const fileMatch = line.match(/Downloaded: (.+\.mkv)/);
 
-    videos.data.forEach(async (video) => {
-      console.log(`downloading ${video.url}`);
+        if (fileMatch !== null) {
+          const fileName = `./${fileMatch[1]}`;
 
-      const { stdout } = await exec(
-        `python twitch-dl download -q source ${video.url}`,
-        (err, stdout, stderr) => {
-          //console.log(err, stdout, stderr);
+          console.log(fileName);
         }
-      );
-
-      stdout.on("data", (data) => {
-        data.split("\n").forEach((line) => {
-          const fileMatch = line.match(/Downloaded: (.+\.mkv)/);
-
-          if (fileMatch !== null) {
-            const fileName = `./${fileMatch[1]}`;
-
-            console.log(fileName);
-          }
-        });
       });
     });
   });
