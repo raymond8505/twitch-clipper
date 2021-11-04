@@ -1,11 +1,17 @@
 require("dotenv").config();
 
 const { ClientCredentialsAuthProvider } = require("@twurple/auth");
-const { promises: fs } = require("fs");
+const {
+  promises: fs,
+  rename,
+  existsSync,
+  readdirSync,
+  unlinkSync,
+} = require("fs");
 const { ApiClient } = require("@twurple/api");
 const tdl = require("twitchdl");
 const { exec } = require("child_process");
-
+const path = require("path");
 const clientId = process.env.TWITCH_API_CLIENT_ID;
 const clientSecret = process.env.TWITCH_API_CLIENT_SECRET;
 
@@ -21,6 +27,13 @@ const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret);
 
 const client = new ApiClient({ authProvider });
 
+// console.log(
+//   path.resolve(
+//     "20211104_1195454929_raymond8505_mrspicy8505s_live_ps4_broadcast.mkv"
+//   )
+// );
+// return;
+
 client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
   const userID = me.id;
 
@@ -31,6 +44,8 @@ client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
   const videos = await client.videos.getVideosByUser(me);
 
   videos.data.forEach(async (video) => {
+    unlinkSync(`${video.id}.mkv`);
+
     console.log(`downloading ${video.url}`);
 
     const { stdout } = await exec(
@@ -45,11 +60,19 @@ client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
         const fileMatch = line.match(/Downloaded: (.+\.mkv)/);
 
         if (fileMatch !== null) {
-          const fileName = `./${fileMatch[1]}`;
+          const tempFileName = fileMatch[1];
 
-          console.log(fileName);
+          readdirSync(".").forEach((file) => {
+            if ((file, video.id, file.indexOf(`_${video.id}_`) !== -1)) {
+              if (existsSync(file)) {
+                rename(file, `${video.id}.mkv`, () => {});
+              }
+            }
+          });
         }
       });
     });
   });
+
+  console.log(`finished downloading ${videos.data.length} videos`);
 });
