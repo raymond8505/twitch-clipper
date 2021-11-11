@@ -49,6 +49,9 @@ const Video = ({video}) => {
     }
 
     return <div>
+        <h1><a href={`https://www.twitch.tv/videos/${video.id}`} target="_blanket">
+                {video.id}
+              </a></h1>
         <fieldset>
             <legend>Inspect Parsed Words</legend>
             <input type="text" placeholder="mm:ss" ref={timeRef} /><button onClick={()=>{

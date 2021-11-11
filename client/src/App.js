@@ -20,7 +20,12 @@ function App() {
         {videos.map((video) => {
           return (
             <li key={video.id}>
-              <span>{video.id}</span>
+              <a
+                href={`https://www.twitch.tv/videos/${video.id}`}
+                target="_blanket"
+              >
+                {video.id}
+              </a>
               <button onClick={() => setCurVideo(video)}>Inspect</button>
             </li>
           );
