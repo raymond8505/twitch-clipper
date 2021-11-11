@@ -6,3 +6,4 @@ tokens.json
 *.wav
 /model*
 ffmpeg.exe
+/server/db.json

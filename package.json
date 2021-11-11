@@ -1,6 +1,6 @@
 {
   "name": "twitch-clipper",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Clip twitch videos  with voice commands in stream",
   "main": "twitch-clipper.js",
   "scripts": {
