@@ -26,7 +26,7 @@ export const HMSToSeconds = (hms) => {
 };
 
 export const hasClip = (word) => {
-  return word === "clip" || ["quip", "equip"].includes(word);
+  return word === "clip" || ["quip", "equip", "claire"].includes(word);
 };
 
 export const alternativeHasClip = (alt) => {

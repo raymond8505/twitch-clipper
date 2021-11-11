@@ -1,11 +1,12 @@
 import {useState,useRef, useEffect} from 'react'
-import { HMSToSeconds, secondsToHMS, alternativeHasClip, getClipsFromWords } from './helpers'
+import { HMSToSeconds, secondsToHMS, getClipsFromWords } from './helpers'
+import {css} from '@emotion/css'
 
 const Video = ({video}) => {
     
-    const [rawWordsResult,setRawWordsResult] = useState(null)
     const timeRef = useRef(null)
     const [clips,setClips] = useState(null)
+    const [foundResults,setFoundResults] = useState([])
 
     useEffect(()=>{
 
@@ -45,19 +46,37 @@ const Video = ({video}) => {
             return results
         })
 
-        console.log(results);
+        setFoundResults(results);
     }
 
-    return <div>
-        <h1><a href={`https://www.twitch.tv/videos/${video.id}`} target="_blanket">
+    return <article>
+        <header className={css`
+            display: flex;
+            justify-content: space-between;
+        `}>
+            <h1><a href={`https://www.twitch.tv/videos/${video.id}`} target="_blanket">
                 {video.id}
-              </a></h1>
+            </a></h1>
+            <button onClick={()=>{
+                fetch(`//localhost:3002/delete/${video.id}`)
+            }}>Delete</button>
+        </header>
         <fieldset>
             <legend>Inspect Parsed Words</legend>
             <input type="text" placeholder="mm:ss" ref={timeRef} /><button onClick={()=>{
                 getWordsByTime(timeRef.current.value)
             }}>Search By Time</button>
-            {rawWordsResult && <ul>
+            {foundResults.length && <ul>
+                {
+                    foundResults.map((res,i) => {
+                        return <li>
+                            <span css={css`
+                                margin-right: 1em;
+                            `}>{secondsToHMS(res.result[0].start)}</span>
+                            <strong>"{res.text}"</strong>
+                            </li>
+                    })
+                }
             </ul>}
         </fieldset>
         <fieldset>
@@ -70,7 +89,7 @@ const Video = ({video}) => {
                 })}
             </ul>}
         </fieldset>
-    </div>
+    </article>
 }
 
 export default Video;

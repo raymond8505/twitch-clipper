@@ -5,8 +5,8 @@
   "main": "twitch-clipper.js",
   "scripts": {
     "server:json": "json-server --watch ./server/db.json --port 3001",
-    "server:clipper:debug": "nodemon ./server/index.js",
-    "server:clipper": "node ./server/index.js",
+    "server:app": "node ./server/index.js",
+    "server:app:debug": "nodemon ./server/index.js",
     "client": "cd ./client && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -27,6 +27,7 @@
     "@emotion/css": "^11.5.0",
     "@twurple/api": "^5.0.8",
     "@twurple/auth": "^5.0.8",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "get-audio-duration": "^3.0.0",
