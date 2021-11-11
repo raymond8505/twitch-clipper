@@ -4,6 +4,9 @@
   "description": "Clip twitch videos  with voice commands in stream",
   "main": "twitch-clipper.js",
   "scripts": {
+    "server:json": "json-server --watch ./server/db.json --port 3001",
+    "server:clipper:debug": "nodemon ./server/index.js",
+    "server:clipper": "node ./server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,9 +23,17 @@
   },
   "homepage": "https://github.com/raymond8505/twitch-clipper#readme",
   "dependencies": {
+    "@emotion/css": "^11.5.0",
     "@twurple/api": "^5.0.8",
     "@twurple/auth": "^5.0.8",
     "dotenv": "^10.0.0",
-    "twitchdl": "0.0.2"
+    "express": "^4.17.1",
+    "get-audio-duration": "^3.0.0",
+    "mongodb": "^4.1.4",
+    "twitchdl": "0.0.2",
+    "vosk": "^0.3.32"
+  },
+  "devDependencies": {
+    "web-vitals": "^2.1.2"
   }
 }

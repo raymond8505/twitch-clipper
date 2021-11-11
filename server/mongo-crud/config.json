@@ -1,0 +1,5 @@
+{
+  "url": "mongodb+srv://root:5GsiixzmiThukQ6@cluster0.dqmfi.mongodb.net/comrade-confrontation?retryWrites=true&w=majority",
+  "url-old": "mongodb://root:5GsiixzmiThukQ6@localhost:27017",
+  "dbname": "twitch-clipper"
+}

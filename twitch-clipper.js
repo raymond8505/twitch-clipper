@@ -3,15 +3,17 @@ require("dotenv").config();
 const { ClientCredentialsAuthProvider } = require("@twurple/auth");
 const {
   promises: fs,
-  rename,
+  renameSync,
   existsSync,
   readdirSync,
   unlinkSync,
 } = require("fs");
 const { ApiClient } = require("@twurple/api");
 const tdl = require("twitchdl");
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
 const path = require("path");
+const voskReader = require("./vosk-reader.js");
+
 const clientId = process.env.TWITCH_API_CLIENT_ID;
 const clientSecret = process.env.TWITCH_API_CLIENT_SECRET;
 
@@ -34,6 +36,24 @@ const client = new ApiClient({ authProvider });
 // );
 // return;
 
+function convertHMS(value) {
+  const sec = parseInt(value, 10); // convert value to number if it's string
+  let hours = Math.floor(sec / 3600); // get hours
+  let minutes = Math.floor((sec - hours * 3600) / 60); // get minutes
+  let seconds = sec - hours * 3600 - minutes * 60; //  get seconds
+  // add 0 if value < 10; Example: 2 => 02
+  if (hours < 10) {
+    hours = "0" + hours;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  if (seconds < 10) {
+    seconds = "0" + seconds;
+  }
+  return hours + "h" + minutes + "m" + seconds + "s"; // Return is HH : MM : SS
+}
+
 client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
   const userID = me.id;
 
@@ -43,10 +63,13 @@ client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
 
   const videos = await client.videos.getVideosByUser(me);
 
-  videos.data.forEach(async (video) => {
-    unlinkSync(`${video.id}.mkv`);
+  console.log(`found ${videos.data.length} videos`);
 
-    console.log(`downloading ${video.url}`);
+  videos.data.forEach(async (video) => {
+    if (existsSync(`${video.id}.wav`)) {
+      console.log(`${video.id}.wav exists`);
+      return;
+    }
 
     const { stdout } = await exec(
       `python twitch-dl download -q source ${video.url}`,
@@ -56,16 +79,27 @@ client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
     );
 
     stdout.on("data", (data) => {
+      console.log(`${video.url} downloaded`);
+
       data.split("\n").forEach((line) => {
         const fileMatch = line.match(/Downloaded: (.+\.mkv)/);
 
         if (fileMatch !== null) {
           const tempFileName = fileMatch[1];
 
-          readdirSync(".").forEach((file) => {
+          readdirSync(".").forEach(async (file) => {
             if ((file, video.id, file.indexOf(`_${video.id}_`) !== -1)) {
               if (existsSync(file)) {
-                rename(file, `${video.id}.mkv`, () => {});
+                //renameSync(file, `${video.id}.mkv`);
+
+                console.log("getting wav");
+                const wavFile = `./${video.id}.wav`;
+
+                execSync(
+                  `ffmpeg -i ${file} -loglevel error -ac 1 -ar 16000 -acodec pcm_s16le ${video.id}.wav`
+                );
+
+                unlinkSync(file);
               }
             }
           });
@@ -73,6 +107,4 @@ client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
       });
     });
   });
-
-  console.log(`finished downloading ${videos.data.length} videos`);
 });

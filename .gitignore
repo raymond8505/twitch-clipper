@@ -3,4 +3,6 @@ package-lock.json
 tokens.json
 .env
 *.mkv
+*.wav
+/model*
 ffmpeg.exe
