@@ -1,9 +1,8 @@
 /node_modules
 package-lock.json
-tokens.json
 .env
 *.mkv
 *.wav
 /model*
 ffmpeg.exe
-/server/db.json
+db.json
