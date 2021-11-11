@@ -1,6 +1,6 @@
 # What?
 
-First and foremost, a Work in progress.
+First and foremost, a Work in Progress.
 
 Downloads your public videos, parses them for voice commands to create clips.
 
