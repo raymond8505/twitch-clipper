@@ -1,6 +1,6 @@
 # What?
 
-First and foremost, a Work in Progress.
+First and foremost, a **Work in Progress**.
 
 Downloads your public videos, parses them for voice commands to create clips.
 
@@ -37,4 +37,4 @@ Me mostly, or you if you stream from a console and want an easy way to clip your
 - [FFMPEG](https://ffmpeg.org/download.html)
   -- Either have the executable in your OS Path, or drop it in the root of the project dir. I'm calling it directly with exec (for now)
 - [twitch-dl](https://github.com/ihabunek/twitch-dl) -- follow the instructions to install, **rename to twitch-dl**
-- [Vosk]() -- Vosk is an offline AI for analizing audio, see [here](https://alphacephei.com/vosk/models) for different models. If a model contains a directory `rnnlm` remove or rename it if the model isn't generating output
+- [Vosk]() -- Vosk is an offline AI for analizing audio, see [here](https://alphacephei.com/vosk/models) for different models and languages support. If a model contains a directory `rnnlm` remove or rename it if the model isn't generating output
