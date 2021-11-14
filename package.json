@@ -6,7 +6,7 @@
   "scripts": {
     "server:json": "json-server --watch ./server/db.json --port 3001",
     "server:app": "node ./server/index.js",
-    "server:app:debug": "nodemon ./server/index.js",
+    "server:app:debug": "nodemon ./server/index.js --ignore *.mkv --ignore *.wav --ignore db.json",
     "client": "cd ./client && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

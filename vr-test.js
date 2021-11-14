@@ -93,12 +93,12 @@ function readWav(file) {
   });
 }
 
-if (!existsSync(`./${id}.wav`)) {
+if (!existsSync(`./media/${id}.wav`)) {
   console.log(`./${id}.wav not found`);
   return;
 }
 
-readWav(`./${id}.wav`);
+readWav(`./media/${id}.wav`);
 // readdirSync(".").forEach(async (file) => {
 //   console.log(`=== ${file} ===`);
 

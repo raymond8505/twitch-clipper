@@ -49,7 +49,8 @@ const Video = ({video}) => {
         setFoundResults(results);
     }
 
-    return <article>
+    return <article className={css`
+    flex-grow: 1`}>
         <header className={css`
             display: flex;
             justify-content: space-between;
