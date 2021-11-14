@@ -2,7 +2,7 @@
 
 First and foremost, a **Work in Progress**.
 
-Downloads your public videos, parses them for voice commands to create clips.
+Downloads your public Twitch videos, parses them for voice commands to create clips, or mark videos for deletion. So you can easily create highlights in your videos in real time while you play using voice commands in real time.
 
 # Who?
 
@@ -11,26 +11,23 @@ Me mostly, or you if you stream from a console and want an easy way to clip your
 # Install
 
 1. install this package
-2. download and install twitch-dl
-3. download and install ffmpeg if needed
-4. [register your twich app](https://dev.twitch.tv/console/apps/create)
-5. Download your prefered model from the Vosk site, unpack contents to `/model/`, if `/model/rnnlm` exists, rename or delete.
-6. Create your .env file by copying `.env-sample` and renaming to `.env` and fill in your client Id, secret and Twitch username
+1. download and install twitch-dl
+1. download and install ffmpeg if needed
+1. Create your .env file by copying `.env-sample` and renaming to `.env`
+1. [register your twich app](https://dev.twitch.tv/console/apps/create) and add the necessary info to your `.env`
+1. Download your prefered model from the Vosk site, unpack contents to `/model/`, if `/model/rnnlm` exists, rename or delete.
 
 # Instructions
 
-## Tools
+## Commands
 
-1. `node twitch-clipper` To download and prep any public videos from your channel
-2. `node vr-test <video's twitch id> To parse` To parse the given video
+- `clip` - once detected, client will list a clip 12s before it detects when you said the command
+- `delete` - once detected, client will list a clip 2s before hand for confirmation. Delete manually in twitch (for now) and click delete in client. Video will remain in db, but be marked deleted
 
 ## App
 
-1. In separate terminals run `server:json` and `client`
-1. run `node twitch-clipper` to get all your public videos
-1. run `node vr-test` on each video's id once downloaded (I'll automate this soon)
-1. refresh the client in your browser to access any found clips, or use the `Parsed Words Inspector` to inspect the raw results surrounding a particular time. Use this tool to better understand how your model hears your voice to dial in your `command synonymns` - words the model often mishears instead of the command you spoke. EI You say "clip", the model outputs "click"
-1. click clip timestamps to open the Twitch player at that spot in a new tab
+1. In separate terminals run the following package scripts `server:json` and `client` and `server:app`
+1. when client opens in a new browser tab click `get new videos` to download all public videos
 
 ## Non NPM Dependencies
 
