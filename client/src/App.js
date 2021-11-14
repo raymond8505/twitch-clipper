@@ -50,6 +50,10 @@ function App() {
       <ul
         className={css`
           width: 25%;
+          max-height: calc(100vh - 4.1em);
+          overflow: auto;
+          margin: 0;
+          padding: 0;
           margin-right: 1em;
         `}
       >
