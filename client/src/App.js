@@ -1,6 +1,7 @@
 import { css } from "@emotion/css";
 import { useEffect, useState } from "react";
 import Video from "./Video";
+import VideoListItem from "./VideoListItem";
 
 function App() {
   const [videos, setVideos] = useState([]);
@@ -22,12 +23,6 @@ function App() {
       res.json().then((data) => {
         updateVideos();
       });
-    });
-  };
-
-  const parseVideo = (id) => {
-    fetch(`//localhost:3002/parse-words/${id}`).then(() => {
-      updateVideos();
     });
   };
 
@@ -62,39 +57,11 @@ function App() {
           .filter((vid) => vid.deleted !== true)
           .map((video) => {
             return (
-              <li
-                key={video.id}
-                className={css`
-                  display: flex;
-                  justify-content: space-between;
-                  text-align: left;
-                  padding: 0.4em 0.8em;
-                  &:nth-child(even) {
-                    background-color: #efefef;
-                  }
-                `}
-              >
-                <a
-                  href={`https://www.twitch.tv/videos/${video.id}`}
-                  target="_blanket"
-                >
-                  {video.id}
-                </a>
-                <span>
-                  {video.words?.length > 0 ? (
-                    "parsed"
-                  ) : (
-                    <button
-                      onClick={() => {
-                        parseVideo(video.id);
-                      }}
-                    >
-                      Parse Video
-                    </button>
-                  )}
-                </span>
-                <button onClick={() => setCurVideo(video)}>Inspect</button>
-              </li>
+              <VideoListItem
+                video={video}
+                setCurVideo={setCurVideo}
+                updateVideos={updateVideos}
+              />
             );
           })}
       </ul>
