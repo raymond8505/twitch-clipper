@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
     JSON.stringify(db)
   );
 
-  unlinkSync(`../../media/${req.params.id}.wav`);
+  unlinkSync(`./media/${req.params.id}.wav`);
 
   res.end();
 };

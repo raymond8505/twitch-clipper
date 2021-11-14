@@ -6,24 +6,29 @@ function App() {
   const [videos, setVideos] = useState([]);
   const [curVideo, setCurVideo] = useState(null);
 
-  useEffect(() => {
+  const updateVideos = () => {
     fetch("//localhost:3001/videos").then((res) => {
       res.json().then((data) => {
         setVideos(data);
       });
     });
+  };
+  useEffect(() => {
+    updateVideos();
   }, []);
 
   const getNewVideos = () => {
     fetch("//localhost:3002/get-videos").then((res) => {
       res.json().then((data) => {
-        console.log(data);
+        updateVideos();
       });
     });
   };
 
   const parseVideo = (id) => {
-    fetch(`//localhost:3002/parse-words/${id}`);
+    fetch(`//localhost:3002/parse-words/${id}`).then(() => {
+      updateVideos();
+    });
   };
 
   return (

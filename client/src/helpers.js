@@ -26,7 +26,16 @@ export const HMSToSeconds = (hms) => {
 };
 
 export const hasClip = (word) => {
-  return word === "clip" || ["quip", "equip", "claire"].includes(word);
+  return (
+    word.trim() === "clip" || ["quip", "equip", "claire"].includes(word.trim())
+  );
+};
+
+export const hasDelete = (word) => {
+  return (
+    word.trim() === "delete" ||
+    ["deleted", "d lead", "di lead", "dee lead"].includes(word.trim())
+  );
 };
 
 export const alternativeHasClip = (alt) => {
@@ -36,6 +45,21 @@ export const alternativeHasClip = (alt) => {
 
   alt.result.forEach((res) => {
     if (hasClip(res.word)) {
+      ret = true;
+      return;
+    }
+  });
+
+  return ret;
+};
+
+export const alternativeHasDelete = (alt) => {
+  if (alt.result === undefined) return false;
+
+  let ret = false;
+
+  alt.result.forEach((res) => {
+    if (hasDelete(res.word)) {
       ret = true;
       return;
     }
@@ -59,6 +83,25 @@ export const getClipsFromWords = (words) => {
   //only return the first result in the alt matching the clip
   alts.forEach((alt) => {
     results.push(alt.result.find((result) => hasClip(result.word)));
+  });
+
+  return results;
+};
+
+export const getDeletesFromWords = (words) => {
+  const results = [];
+  const alts = [];
+
+  words.forEach((word) => {
+    word.alternatives.forEach((alt) => {
+      if (alternativeHasDelete(alt)) {
+        alts.push(alt);
+      }
+    });
+  });
+
+  alts.forEach((alt) => {
+    results.push(alt.result.find((result) => hasDelete(result.word)));
   });
 
   return results;

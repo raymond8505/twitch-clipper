@@ -1,11 +1,12 @@
 import {useState,useRef, useEffect} from 'react'
-import { HMSToSeconds, secondsToHMS, getClipsFromWords } from './helpers'
+import { HMSToSeconds, secondsToHMS, getClipsFromWords, getDeletesFromWords } from './helpers'
 import {css} from '@emotion/css'
 
 const Video = ({video}) => {
     
     const timeRef = useRef(null)
     const [clips,setClips] = useState(null)
+    const [deletes,setDeletes] = useState(null)
     const [foundResults,setFoundResults] = useState([])
 
     useEffect(()=>{
@@ -21,6 +22,16 @@ const Video = ({video}) => {
 
         setClips(clipsToSet)
 
+        const deleteResults = getDeletesFromWords(video.words)
+        const deletesToSet = {}
+
+        deleteResults.forEach(result => {
+            const key = secondsToHMS(result.start - 2)
+            deletesToSet[key] = result;
+        })
+
+        setDeletes(deletesToSet)
+
     },[video])
 
     //console.log(video.words[30]);
@@ -31,7 +42,6 @@ const Video = ({video}) => {
         const results = [];
 
         video.words.map(word => {
-
 
             word.alternatives.forEach(alt => {
                 alt.result?.forEach(res => {
@@ -59,7 +69,7 @@ const Video = ({video}) => {
                 {video.id}
             </a></h1>
             <button onClick={()=>{
-                fetch(`//localhost:3002/delete/${video.id}`)
+                fetch(`//localhost:3002/delete/${video.id}`).then(()=>window.location.reload())
             }}>Delete</button>
         </header>
         <fieldset>
@@ -74,7 +84,7 @@ const Video = ({video}) => {
                             <span css={css`
                                 margin-right: 1em;
                             `}>{secondsToHMS(res.result[0].start)}</span>
-                            <strong>"{res.text}"</strong>
+                            <strong>"{res.text.trim()}"</strong>
                             </li>
                     })
                 }
@@ -90,6 +100,16 @@ const Video = ({video}) => {
                 })}
             </ul>}
         </fieldset>
+        {deletes && Object.keys(deletes).length > 0 && <fieldset>
+            <label>Deletes</label>
+            {deletes && <ul>
+                {Object.keys(deletes).map(timeStamp => {
+                    return <li key={timeStamp}>
+                        <a href={`https://www.twitch.tv/videos/${video.id}?t=${timeStamp}`} target="_blank">{timeStamp}</a>
+                        </li>
+                })}
+            </ul>}
+            </fieldset>}
     </article>
 }
 
