@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
     deleted: true,
   });
 
-  console.log(db.videos, __dirname);
+  //console.log(db.videos, __dirname);
 
   writeFileSync(
     __dirname.replace("\\routes", "") + "\\db.json",

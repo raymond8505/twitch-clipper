@@ -61,6 +61,7 @@ function App() {
                 video={video}
                 setCurVideo={setCurVideo}
                 updateVideos={updateVideos}
+                key={video.id}
               />
             );
           })}

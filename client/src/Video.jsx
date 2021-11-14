@@ -77,7 +77,7 @@ const Video = ({video}) => {
             <input type="text" placeholder="mm:ss" ref={timeRef} /><button onClick={()=>{
                 getWordsByTime(timeRef.current.value)
             }}>Search By Time</button>
-            {foundResults.length && <ul>
+            {foundResults.length > 0 && <ul>
                 {
                     foundResults.map((res,i) => {
                         return <li>
