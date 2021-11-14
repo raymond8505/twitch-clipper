@@ -18,11 +18,12 @@ module.exports = async (req, res) => {
         video.words = results;
 
         updateVideoInDB(video);
+
+        res.write(`${video.id} parsed`);
+        console.log(`${video.id} parsed`);
+        res.end();
       }
     );
-
-    res.write(`${video.id} parsed`);
-    res.end();
   } else {
     res.end();
   }
