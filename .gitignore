@@ -5,4 +5,5 @@ package-lock.json
 *.wav
 /model*
 ffmpeg.exe
-/server/db.json
+db.json
+~db.json
