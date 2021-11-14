@@ -19,7 +19,7 @@ Me mostly, or you if you stream from a console and want an easy way to clip your
 
 # Instructions
 
-## Commands
+## Voice Commands
 
 - `clip` - once detected, client will list a clip 12s before it detects when you said the command
 - `delete` - once detected, client will list a clip 2s before hand for confirmation. Delete manually in twitch (for now) and click delete in client. Video will remain in db, but be marked deleted
