@@ -43,7 +43,9 @@ const VideoListItem = ({ video, setCurVideo, updateVideos }) => {
           </button>
         )}
       </span>
-      <button onClick={() => setCurVideo(video)}>Inspect</button>
+      {video.words && video.words.length > 0 && (
+        <button onClick={() => setCurVideo(video)}>Inspect</button>
+      )}
     </li>
   );
 };

@@ -2,7 +2,8 @@ require("dotenv").config();
 
 const { ClientCredentialsAuthProvider } = require("@twurple/auth");
 const { ApiClient } = require("@twurple/api");
-const { writeFileSync, unlinkSync } = require("fs");
+const { writeFileSync, unlinkSync, readFileSync, existsSync } = require("fs");
+const { updateVideoInDB } = require("../helpers");
 
 const clientId = process.env.TWITCH_API_CLIENT_ID;
 const clientSecret = process.env.TWITCH_API_CLIENT_SECRET;
@@ -16,29 +17,39 @@ module.exports = async (req, res) => {
   //TODO: figure out why no work
   //client.videos.deleteVideosByIds([`${req.params.id}`]);
 
-  const dbRaw = require("../db.json");
-  const db = { ...dbRaw };
+  console.log();
 
-  const videoToDelete = db.videos.find(
-    (video) => parseInt(video.id) === parseInt(req.params.id)
+  const dbRaw = readFileSync(
+    `${__dirname.replace("\\server\\routes", "")}\\server\\db.json`,
+    { flag: "rs+" }
   );
+  const db = { ...JSON.parse(dbRaw) };
 
-  db.videos = db.videos.filter(
-    (video) => parseInt(video.id) !== parseInt(req.params.id)
-  );
-  db.videos.push({
-    ...videoToDelete,
-    deleted: true,
+  console.log({ db });
+
+  const videoToDelete = db.videos.find((video) => {
+    console.log(parseInt(video.id), parseInt(req.params.id));
+    return parseInt(video.id) === parseInt(req.params.id);
   });
 
-  //console.log(db.videos, __dirname);
+  console.log(videoToDelete);
 
-  writeFileSync(
-    __dirname.replace("\\routes", "") + "\\db.json",
-    JSON.stringify(db)
-  );
+  if (videoToDelete !== undefined) {
+    updateVideoInDB({
+      ...videoToDelete,
+      deleted: true,
+    });
+  }
 
-  unlinkSync(`./media/${req.params.id}.wav`);
+  const wav = `${__dirname.replace("\\server\\routes", "")}\\media\\${
+    req.params.id
+  }.wav`;
+
+  if (existsSync(wav)) {
+    unlinkSync(wav);
+  }
 
   res.end();
+
+  console.log(req.params.id, "deleted");
 };

@@ -22,7 +22,9 @@ const convertHMS = (value) => {
   return hours + "h" + minutes + "m" + seconds + "s"; // Return is HH : MM : SS
 };
 const updateVideoInDB = (videoToUpdate) => {
-  const db = require("./db.json");
+  const db = JSON.parse(readFileSync(`${__dirname}\\db.json`));
+
+  //console.log(db);
 
   db.videos = db.videos.filter(
     (video) => parseInt(video.id) !== parseInt(videoToUpdate.id)
@@ -30,7 +32,7 @@ const updateVideoInDB = (videoToUpdate) => {
 
   db.videos.push(videoToUpdate);
 
-  writeFileSync(`${__dirname}/db.json`, JSON.stringify(db));
+  writeFileSync(`${__dirname}\\db.json`, JSON.stringify(db));
 };
 
 const videoExists = (id) => {

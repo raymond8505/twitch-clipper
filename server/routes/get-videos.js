@@ -3,7 +3,7 @@ require("dotenv").config();
 const { ClientCredentialsAuthProvider } = require("@twurple/auth");
 const { ApiClient } = require("@twurple/api");
 
-const { exec, execSync } = require("child_process");
+const { exec } = require("child_process");
 
 const {
   getSchema,
@@ -11,13 +11,25 @@ const {
   videoExists,
   getVideoFields,
 } = require("../helpers");
+
+const schema = getSchema().videos;
+
 const { existsSync, readdirSync, unlinkSync } = require("fs");
 const clientId = process.env.TWITCH_API_CLIENT_ID;
 const clientSecret = process.env.TWITCH_API_CLIENT_SECRET;
 
-module.exports = async (req, res) => {
-  const schema = getSchema();
+const saveVideoData = (video) => {
+  console.log("saving video data");
+  const videoToSave = { ...schema };
+  videoToSave.vod = getVideoFields(video);
+  videoToSave.id = video.id;
 
+  updateVideoInDB(videoToSave);
+
+  console.log("finished getting", video.id);
+};
+
+module.exports = async (req, res) => {
   console.log("getting videos");
 
   const authProvider = new ClientCredentialsAuthProvider(
@@ -36,16 +48,14 @@ module.exports = async (req, res) => {
 
       // console.log(channel.displayName);
 
-      const videos = await client.videos.getVideosByUser(me);
+      const videos = await client.videos.getVideosByUser(me, {
+        limit: 100,
+        first: 1,
+      });
 
-      //console.log(`found ${videos.data.length} videos`);
+      console.log(`found ${videos.data.length} videos`);
 
-      videos.data.forEach(async (video) => {
-        if (videoExists(video.id)) {
-          console.log(`skipping ${video.id} already exists`);
-          return;
-        }
-
+      videos.data.forEach(async (video, i) => {
         const { stdout } = await exec(
           `python twitch-dl download -q source ${video.url}`,
           (err, stdout, stderr) => {
@@ -57,36 +67,48 @@ module.exports = async (req, res) => {
           console.log(`${video.url} downloaded`);
 
           data.split("\n").forEach((line) => {
+            //console.log(line);
             const fileMatch = line.match(/Downloaded: (.+\.mkv)/);
 
             if (fileMatch !== null) {
               const tempFileName = fileMatch[1];
 
               readdirSync(".").forEach(async (file) => {
-                if ((file, video.id, file.indexOf(`_${video.id}_`) !== -1)) {
+                if (file.indexOf(`_${video.id}_`) !== -1) {
                   if (existsSync(file)) {
-                    //renameSync(file, `${video.id}.mkv`);
-
                     console.log("getting wav");
                     const wavFile = `./media/${video.id}.wav`;
 
-                    execSync(
-                      `ffmpeg -i ${file} -loglevel error -ac 1 -ar 16000 -acodec pcm_s16le ./media/${video.id}.wav`
-                    );
+                    if (existsSync(wavFile)) {
+                      console.log(wavFile, "exists");
+                      if (!videoExists(video.id)) saveVideoData(video);
+                      unlinkSync(file);
 
-                    unlinkSync(file);
+                      if (i === videos.data.length - 1)
+                        console.log("== DONE ==");
+                    } else {
+                      exec(
+                        `ffmpeg -i ${file} -loglevel error -ac 1 -ar 16000 -acodec pcm_s16le ${wavFile}`,
+                        (e, data, err) => {
+                          console.log("got wav", { wavFile, data });
 
-                    const videoToSave = { ...schema };
-                    videoToSave.vod = getVideoFields(video);
-                    videoToSave.id = video.id;
+                          unlinkSync(file);
 
-                    updateVideoInDB(videoToSave);
+                          saveVideoData(video);
+
+                          if (i === videos.data.length - 1)
+                            console.log("== DONE ==");
+                        }
+                      );
+                    }
                   }
                 }
               });
             }
           });
         });
+
+        return;
       });
 
       res.end();
