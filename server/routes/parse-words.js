@@ -1,5 +1,6 @@
 const { getVideoById, updateVideoInDB } = require("../helpers");
 const reader = require("../../vosk-reader.js");
+const log = require("single-line-log").stdout;
 
 module.exports = async (req, res) => {
   //res.write(`parse words for ${req.params.id}`);
@@ -12,7 +13,24 @@ module.exports = async (req, res) => {
     reader(
       file,
       (words) => {
-        results.push(words);
+        const len = video.vod.durationInSeconds;
+
+        //console.log(words?.alternatives[words.alternatives.length - 1]);
+
+        const result =
+          words?.alternatives[words.alternatives.length - 1]?.result;
+
+        if (result) {
+          const pos = result[result.length - 1].end;
+
+          log(
+            `(${pos} / ${len}) ${Math.round((pos / len) * 100)}% "${
+              result[result.length - 1].word
+            }"`
+          );
+
+          results.push(words);
+        }
       },
       () => {
         video.words = results;
@@ -20,7 +38,7 @@ module.exports = async (req, res) => {
         updateVideoInDB(video);
 
         res.write(`${video.id} parsed`);
-        console.log(`${video.id} parsed`);
+        console.log(`\n${video.id} parsed`);
         res.end();
       }
     );

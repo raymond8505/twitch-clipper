@@ -17,18 +17,16 @@ module.exports = async (req, res) => {
   //TODO: figure out why no work
   //client.videos.deleteVideosByIds([`${req.params.id}`]);
 
-  console.log();
-
   const dbRaw = readFileSync(
     `${__dirname.replace("\\server\\routes", "")}\\server\\db.json`,
     { flag: "rs+" }
   );
   const db = { ...JSON.parse(dbRaw) };
 
-  console.log({ db });
+  //console.log({ db });
 
   const videoToDelete = db.videos.find((video) => {
-    console.log(parseInt(video.id), parseInt(req.params.id));
+    //console.log(parseInt(video.id), parseInt(req.params.id));
     return parseInt(video.id) === parseInt(req.params.id);
   });
 
@@ -37,6 +35,8 @@ module.exports = async (req, res) => {
   if (videoToDelete !== undefined) {
     updateVideoInDB({
       ...videoToDelete,
+      words: undefined,
+      vod: undefined,
       deleted: true,
     });
   }
