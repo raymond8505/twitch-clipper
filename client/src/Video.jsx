@@ -3,6 +3,17 @@ import { HMSToSeconds, secondsToHMS, getClipsFromWords, getDeletesFromWords } fr
 import {css} from '@emotion/css'
 
 const Video = ({video}) => {
+
+    // const form = new FormData()
+    // form.append('api_key', process.env.REACT_APP_GIPHY_API_KEY)
+    // form.append()
+
+    // fetch('https://upload.giphy.com/v1/gifs',{
+    //     method : "POST",
+    //     body : new FormData()
+    // }).then(data => {
+    //     console.log(data);
+    // })
     
     const timeRef = useRef(null)
     const [clips,setClips] = useState(null)

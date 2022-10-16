@@ -1,0 +1,67 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Raymond\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add @giphy/react-components @giphy/js-fetch-api
+
+PATH: 
+  C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\xampp\mysql\bin;C:\Program Files\Git\cmd;C:\xampp\php\;C:\Program Files\PuTTY\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Users\Raymond\AppData\Local\Programs\Python\Python39\;C:\Users\Raymond\AppData\Local\Programs\Python\Python39\Scripts;C:\Users\Raymond\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\Raymond\AppData\Local\Programs\Python\Python39\;C:\Users\Raymond\AppData\Local\Microsoft\WindowsApps;C:\Users\Raymond\AppData\Roaming\npm;C:\Users\Raymond\AppData\Local\Programs\Microsoft VS Code\bin;
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  14.3.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'C:\xampp\htdocs\twitch-clipper\twitch-clipper\node_modules\ffi-napi\prebuilds\win32-x64\node.napi.uv1.node'
+
+npm manifest: 
+  {
+    "name": "twitch-clipper",
+    "version": "0.0.1",
+    "description": "Clip twitch videos  with voice commands in stream",
+    "main": "twitch-clipper.js",
+    "scripts": {
+      "server:json": "json-server --watch ./server/db.json --port 3001",
+      "server:app": "node ./server/index.js",
+      "server:app:debug": "nodemon ./server/index.js --ignore *.mkv --ignore *.wav --ignore db.json",
+      "client": "cd ./client && npm start",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/raymond8505/twitch-clipper.git"
+    },
+    "keywords": [
+      "twitch"
+    ],
+    "author": "Raymond Selzer",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/raymond8505/twitch-clipper/issues"
+    },
+    "homepage": "https://github.com/raymond8505/twitch-clipper#readme",
+    "dependencies": {
+      "@emotion/css": "^11.5.0",
+      "@twurple/api": "^5.0.8",
+      "@twurple/auth": "^5.0.8",
+      "cors": "^2.8.5",
+      "dotenv": "^10.0.0",
+      "express": "^4.17.1",
+      "get-audio-duration": "^3.0.0",
+      "mongodb": "^4.1.4",
+      "single-line-log": "^1.1.2",
+      "twitchdl": "0.0.2",
+      "vosk": "^0.3.32"
+    },
+    "devDependencies": {
+      "web-vitals": "^2.1.2"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
     return parseInt(video.id) === parseInt(req.params.id);
   });
 
-  console.log(videoToDelete);
+  //console.log(videoToDelete);
 
   if (videoToDelete !== undefined) {
     updateVideoInDB({

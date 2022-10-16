@@ -28,7 +28,7 @@ export const HMSToSeconds = (hms) => {
 export const hasClip = (word) => {
   return (
     word.trim() === "clip" ||
-    ["quip", "equip", "claire", "a twit"].includes(word.trim())
+    ["quip", "equip", "claire", "a twit", "cliff"].includes(word.trim())
   );
 };
 
