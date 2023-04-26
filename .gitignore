@@ -2,6 +2,7 @@
 package-lock.json
 .env
 *.mkv
+*.mp4
 *.wav
 /model*
 ffmpeg.exe

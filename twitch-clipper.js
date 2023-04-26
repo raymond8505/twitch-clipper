@@ -72,7 +72,7 @@ client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
           readdirSync(".").forEach(async (file) => {
             if ((file, video.id, file.indexOf(`_${video.id}_`) !== -1)) {
               if (existsSync(file)) {
-                //renameSync(file, `${video.id}.mkv`);
+                renameSync(file, `${video.id}.mkv`);
 
                 console.log("getting wav");
                 const wavFile = `./media/${video.id}.wav`;
@@ -81,7 +81,7 @@ client.users.getUserByName(process.env.TWITCH_API_USERNAME).then(async (me) => {
                   `ffmpeg -i ${file} -loglevel error -ac 1 -ar 16000 -acodec pcm_s16le ./media/${video.id}.wav`
                 );
 
-                unlinkSync(file);
+                //unlinkSync(file);
               }
             }
           });
